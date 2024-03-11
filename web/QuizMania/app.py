@@ -1,8 +1,12 @@
-from flask import Flask,render_template_string, request, session, redirect, url_for
+from flask import Flask, render_template_string, request, session, redirect, url_for, render_template
+from flask_session import Session
 import qrcode
 
+
 app = Flask(__name__, static_url_path='/static')
-app.secret_key = 'chiaveSegretaDaCambiare'
+
+
+
 def generateQR(link,filename):
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(link)
@@ -13,19 +17,28 @@ def generateQR(link,filename):
 
 @app.route('/')
 def main_page():  # put application's code here
-    generateQR("https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D","coso")
-    print("Hello World!")
+
     return "<img src='/static/qr.png'>"
 
 @app.route('/play/')
 def play_page():  # put application's code here
-    session['gameNumber'] = request.form['gameNumber']
     return "play page"
 
 @app.route('/host/')
 def host_page():  # put application's code here
     print("Hello World!")
     return "host page"
+
+@app.route('/guestForm/', methods=["POST", "GET"])
+def guestForm():
+    if request.method == "POST":
+        first_name = request.form.get("name")
+        last_name = request.form.get("surname")
+        email = request.form.get("email")
+        newsletter = request.form.get("newsletter")
+        print(first_name, last_name, email, newsletter)
+    return render_template("guestForm.html")
+
 
 
 if __name__ == '__main__':

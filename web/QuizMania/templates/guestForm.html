@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <form method="post" action="{{ url_for("guestForm")}}">
+        <label for="name">Nome</label>
+        <input id="name" type="text" name="name"><br>
+        <label for="surname">Cognome</label>
+        <input id="surname" type="text" name="surname"><br>
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email"><br>
+        <label for="newsletter">Voglio ricevere delle news rilevanti il progetto o la CPT di Trevano</label>
+        <input id="newsletter" type="checkbox" value="True" name="newsletter"><br>
+        <label for="cookies">Accetto l' informativa sulla privacy e sui cookies</label>
+        <input id="cookies" type="checkbox" name="cookies"><br>
+        <input type="submit">
+    </form>
+</body>
+</html>
