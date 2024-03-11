@@ -1,0 +1,19 @@
+* {
+    font-family: Calibri;
+}
+.foot {
+    background: #333;
+    color: #ddd;
+    padding: 10px;
+}
+.git-icon {
+    color: purple;
+}
+a {
+    color: #ddd;
+
+}
+body {
+    padding: 0px;
+    margin: 0px;
+}
