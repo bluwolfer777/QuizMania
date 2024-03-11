@@ -8,7 +8,7 @@ def generateQR(link,filename):
     qr.add_data(link)
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
-    img.save('static/' +  + '.png')
+    img.save('static/' + filename + '.png')
 
 
 @app.route('/')
