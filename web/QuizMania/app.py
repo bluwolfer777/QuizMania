@@ -3,12 +3,12 @@ import qrcode
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = 'chiaveSegretaDaCambiare'
-def generateQR(link):
+def generateQR(link,filename):
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(link)
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
-    img.save('static/qr.png')
+    img.save('static/' +  + '.png')
 
 
 @app.route('/')
