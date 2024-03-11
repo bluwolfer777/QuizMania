@@ -13,7 +13,7 @@ def generateQR(link,filename):
 
 @app.route('/')
 def main_page():  # put application's code here
-    generateQR("https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D")
+    generateQR("https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D","coso")
     print("Hello World!")
     return "<img src='/static/qr.png'>"
 
