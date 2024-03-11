@@ -4,9 +4,6 @@ import qrcode
 import time
 
 app = Flask(__name__, static_url_path='/static')
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
 
 def generateQR(link,filename):
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -16,7 +13,7 @@ def generateQR(link,filename):
     img.save('static/' + filename + '.png')
 
 def generateSessionId(email):
-    id = str(time.time())
+    id = time.time()
     id += email
     return id
 
