@@ -79,9 +79,7 @@ def guestForm():
         email = request.form.get("email")
         newsletter = request.form.get("newsletter")
         job = request.form.get("type")
-        print(newsletter)
-        print(type(newsletter))
-        if newsletter == "true":
+        if newsletter == "True":
             newsletter = 1
         else:
             newsletter = 0
