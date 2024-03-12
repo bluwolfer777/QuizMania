@@ -53,4 +53,4 @@ def guestForm():
 
 if __name__ == '__main__':
     tmp = getCurrentIP()
-    app.run(host=tmp)
+    app.run(host=tmp, port=80)
