@@ -1,6 +1,6 @@
 div{
     color: #fff;
-    background-color: #c1c1c1;
+    /*background-color: #c1c1c1;*/
     text-align: center;
 }
 
@@ -8,20 +8,40 @@ div{
     background-color: transparent;
 }
 
-.div-text-answer1{
+.btn-answer1{
     background-color: #A179F2;
 }
 
-.div-text-answer2{
+.btn-answer1:hover{
+    transition: 0.3s ease-in-out;
+    background-color: #6e40cb;
+}
+
+.btn-answer2{
     background-color: #5ACAE0;
 }
 
-.div-text-answer3{
+.btn-answer2:hover{
+    transition: 0.3s ease-in-out;
+    background-color: #2b94a9;
+}
+
+.btn-answer3{
     background-color: #E0935A;
 }
 
-.div-text-answer4{
+.btn-answer3:hover{
+    transition: 0.3s ease-in-out;
+    background-color: #aa5e24;
+}
+
+.btn-answer4{
     background-color: #5AE061;
+}
+
+.btn-answer4:hover{
+    transition: 0.3s ease-in-out;
+    background-color: #1eb526;
 }
 
 .progress-container {
