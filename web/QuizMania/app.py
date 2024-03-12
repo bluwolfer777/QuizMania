@@ -27,7 +27,7 @@ def generateSessionId(email):
 
 @app.route('/')
 def main_page():  # put application's code here
-    return "<img src='/static/qr.png'>"
+    return render_template('index.html', qrcode="../static/qr.png")
 
 @app.route('/play/')
 def play_page():  # put application's code here
