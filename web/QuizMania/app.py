@@ -8,18 +8,20 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = '123456789'
 
 mydb = mysql.connector.connect(
-  host="192.168.2.2",
-  user="esteban",
-  password="admin"
+    host = "192.168.2.2",
+    user = "esteban",
+    password = "admin",
+    database = "quizmania"
 )
 
 def insertUserData():
     mycursor = mydb.cursor()
-    sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,)"
-    val = ("John", "Highway 21")
+    sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
+    val = ("Leon","Rosamilia","leon.rosamili@gmail.com",1,"altro")
     mycursor.execute(sql, val)
     mydb.commit()
     print(mycursor.rowcount, "record inserted.")
+    mydb.commit()
 
 print(mydb)
 
@@ -48,6 +50,7 @@ def main_page():  # put application's code here
 
 @app.route('/play/')
 def play_page():  # put application's code here
+    insertUserData()
     return "play page"
 
 @app.route('/host/')
