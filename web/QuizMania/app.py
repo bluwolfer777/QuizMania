@@ -83,7 +83,7 @@ def guestForm():
             newsletter = 1
         else:
             newsletter = 0
-        print(first_name, last_name, email, newsletter)
+
         session['id'] = generateSessionId(email)
         insert(first_name,last_name,email,newsletter,job)
         return redirect("/", code=302)
