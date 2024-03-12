@@ -1,5 +1,5 @@
 from flask import Flask,render_template_string, request, session, redirect, url_for
-import qrcode
+import qrcode, socket
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = 'chiaveSegretaDaCambiare'
@@ -9,6 +9,13 @@ def generateQR(link,filename):
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
     img.save('static/' + filename + '.png')
+
+def getCurrentIP():
+    local_hostname = socket.gethostname()
+    ip_addresses = socket.gethostbyname_ex(local_hostname)[2]
+    filtered_ips = [ip for ip in ip_addresses if not ip.startswith("127.")]
+    first_ip = filtered_ips[:1]
+    return first_ip[0]
 
 
 @app.route('/')
@@ -29,4 +36,5 @@ def host_page():  # put application's code here
 
 
 if __name__ == '__main__':
-    app.run(host='192.168.2.2')
+    tmp = getCurrentIP()
+    app.run(host=tmp)
