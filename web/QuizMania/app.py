@@ -4,6 +4,7 @@ from flask_session import Session
 import time
 
 app = Flask(__name__, static_url_path='/static')
+app.config['SECRET_KEY'] = '123456789'
 
 def generateQR(link,filename):
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
