@@ -23,11 +23,11 @@ def insertUserData():
     print(mycursor.rowcount, "record inserted.")
     mydb.commit()
 
-def insert(name,surname,email,newsletter,type):
+def insert(name,surname,email,newsletter,job):
     if request.method == 'POST':
         mycursor = mydb.cursor()
         sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
-        val = (name, surname, email, newsletter, type)
+        val = (name, surname, email, newsletter, job)
         mycursor.execute(sql, val)
         mydb.commit()
         print(mycursor.rowcount, "record inserted.")
@@ -78,14 +78,16 @@ def guestForm():
         last_name = request.form.get("surname")
         email = request.form.get("email")
         newsletter = request.form.get("newsletter")
-        type = request.form.get("type")
+        job = request.form.get("type")
+        print(newsletter)
+        print(type(newsletter))
         if newsletter == "true":
             newsletter = 1
         else:
             newsletter = 0
         print(first_name, last_name, email, newsletter)
         session['id'] = generateSessionId(email)
-        insert(first_name,last_name,email,newsletter,type)
+        insert(first_name,last_name,email,newsletter,job)
         return redirect("/", code=302)
     return render_template("guestForm.html")
 
