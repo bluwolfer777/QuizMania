@@ -29,4 +29,4 @@ def host_page():  # put application's code here
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='192.168.2.2')
