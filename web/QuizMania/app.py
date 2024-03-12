@@ -3,11 +3,12 @@ from flask import Flask, render_template_string, request, session, redirect, url
 from flask_session import Session
 import time
 import mysql.connector
+import random
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = '123456789'
 
-mydb = mysql.connector.connect(
+quizManiaDB = mysql.connector.connect(
     host = "192.168.2.2",
     user = "esteban",
     password = "admin",
@@ -15,24 +16,22 @@ mydb = mysql.connector.connect(
 )
 
 def insertUserData():
-    mycursor = mydb.cursor()
+    mycursor = quizManiaDB.cursor()
     sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
     val = ("Leon","Rosamilia","leon.rosamili@gmail.com",1,"altro")
     mycursor.execute(sql, val)
-    mydb.commit()
-    print(mycursor.rowcount, "record inserted.")
-    mydb.commit()
+    quizManiaDB.commit()
 
 def insert(name,surname,email,newsletter,job):
     if request.method == 'POST':
-        mycursor = mydb.cursor()
+        mycursor = quizManiaDB.cursor()
         sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
         val = (name, surname, email, newsletter, job)
         mycursor.execute(sql, val)
-        mydb.commit()
-        print(mycursor.rowcount, "record inserted.")
-        mydb.commit()
-        return 'Dati inseriti con successo nel database'
+        quizManiaDB.commit()
+
+def generate_random_code():
+    return "{:04d}".format(random.randint(0, 9999))
 
 def generateQR(link,filename):
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -60,7 +59,11 @@ def main_page():  # put application's code here
             return redirect('/guestForm', code=302)
     except:
         return redirect('/guestForm', code=302)
-    return render_template('index.html', qrcode="../static/qr.png")
+    room_code = generate_random_code()
+    print(room_code)
+    generateQR(room_code, "qr")
+
+    return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
 
 @app.route('/play/')
 def play_page():  # put application's code here
