@@ -20,7 +20,7 @@ def getCurrentIP():
     return first_ip[0]
 
 def generateSessionId(email):
-    id = time.time()
+    id = str(time.time())
     id += email
     return id
 
