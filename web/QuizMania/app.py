@@ -51,7 +51,7 @@ def getCurrentIP():
 def generateSessionId(email):
     id = str(time.time())
     id += email
-    return id
+    return hash(id)
 
 @app.route('/')
 def main_page():  # put application's code here
