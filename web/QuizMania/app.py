@@ -2,9 +2,37 @@ import qrcode, socket
 from flask import Flask, render_template_string, request, session, redirect, url_for, render_template
 from flask_session import Session
 import time
+import mysql.connector
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = '123456789'
+
+mydb = mysql.connector.connect(
+    host = "192.168.2.2",
+    user = "esteban",
+    password = "admin",
+    database = "quizmania"
+)
+
+def insertUserData():
+    mycursor = mydb.cursor()
+    sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
+    val = ("Leon","Rosamilia","leon.rosamili@gmail.com",1,"altro")
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print(mycursor.rowcount, "record inserted.")
+    mydb.commit()
+
+def insert(name,surname,email,newsletter,type):
+    if request.method == 'POST':
+        mycursor = mydb.cursor()
+        sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
+        val = (name, surname, email, newsletter, type)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        print(mycursor.rowcount, "record inserted.")
+        mydb.commit()
+        return 'Dati inseriti con successo nel database'
 
 def generateQR(link,filename):
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -27,6 +55,11 @@ def generateSessionId(email):
 
 @app.route('/')
 def main_page():  # put application's code here
+    try:
+        if session['id'] == None:
+            return redirect('/guestForm', code=302)
+    except:
+        return redirect('/guestForm', code=302)
     return render_template('index.html', qrcode="../static/qr.png")
 
 @app.route('/play/')
@@ -45,10 +78,12 @@ def guestForm():
         last_name = request.form.get("surname")
         email = request.form.get("email")
         newsletter = request.form.get("newsletter")
+        type = request.form.get("type")
         print(first_name, last_name, email, newsletter)
         session['id'] = generateSessionId(email)
+        insert(first_name,last_name,email,newsletter,type)
+        return redirect("/", code=302)
     return render_template("guestForm.html")
-
 
 
 if __name__ == '__main__':
