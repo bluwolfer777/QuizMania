@@ -23,7 +23,16 @@ def insertUserData():
     print(mycursor.rowcount, "record inserted.")
     mydb.commit()
 
-print(mydb)
+def insert(name,surname,email,newsletter,type):
+    if request.method == 'POST':
+        mycursor = mydb.cursor()
+        sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
+        val = (name, surname, email, newsletter, type)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        print(mycursor.rowcount, "record inserted.")
+        mydb.commit()
+        return 'Dati inseriti con successo nel database'
 
 def generateQR(link,filename):
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -46,11 +55,15 @@ def generateSessionId(email):
 
 @app.route('/')
 def main_page():  # put application's code here
+    try:
+        if session['id'] == None:
+            return redirect('/guestForm', code = 302)
+    except:
+        return redirect('/guestForm', code=302)
     return render_template('index.html', qrcode="../static/qr.png")
 
 @app.route('/play/')
 def play_page():  # put application's code here
-    insertUserData()
     return "play page"
 
 @app.route('/host/')
@@ -65,10 +78,12 @@ def guestForm():
         last_name = request.form.get("surname")
         email = request.form.get("email")
         newsletter = request.form.get("newsletter")
+        type = "altro"
         print(first_name, last_name, email, newsletter)
         session['id'] = generateSessionId(email)
+        insert(first_name,last_name,email,newsletter,type)
+        return redirect("/", code=302)
     return render_template("guestForm.html")
-
 
 
 if __name__ == '__main__':
