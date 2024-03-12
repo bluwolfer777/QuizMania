@@ -57,7 +57,7 @@ def generateSessionId(email):
 def main_page():  # put application's code here
     try:
         if session['id'] == None:
-            return redirect('/guestForm', code = 302)
+            return redirect('/guestForm', code=302)
     except:
         return redirect('/guestForm', code=302)
     return render_template('index.html', qrcode="../static/qr.png")
@@ -78,7 +78,7 @@ def guestForm():
         last_name = request.form.get("surname")
         email = request.form.get("email")
         newsletter = request.form.get("newsletter")
-        type = "altro"
+        type = request.form.get("type")
         print(first_name, last_name, email, newsletter)
         session['id'] = generateSessionId(email)
         insert(first_name,last_name,email,newsletter,type)
