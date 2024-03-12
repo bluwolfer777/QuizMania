@@ -2,9 +2,26 @@ import qrcode, socket
 from flask import Flask, render_template_string, request, session, redirect, url_for, render_template
 from flask_session import Session
 import time
+import mysql.connector
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = '123456789'
+
+mydb = mysql.connector.connect(
+  host="192.168.2.2",
+  user="esteban",
+  password="admin"
+)
+
+def insertUserData():
+    mycursor = mydb.cursor()
+    sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,)"
+    val = ("John", "Highway 21")
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print(mycursor.rowcount, "record inserted.")
+
+print(mydb)
 
 def generateQR(link,filename):
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -54,3 +71,4 @@ def guestForm():
 if __name__ == '__main__':
     tmp = getCurrentIP()
     app.run(host=tmp)
+
