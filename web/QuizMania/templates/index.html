@@ -71,7 +71,45 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous">
+
+        Quagga.init({
+            inputStream: {
+              name: "Live",
+              type: "LiveStream",
+              target: document.querySelector('#qrcode'), // Target element for the video stream
+            },
+            decoder: {
+              readers: ["code_128_reader"], // Use the appropriate reader for QR codes
+            },
+          }, function(err) {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            console.log("Quagga initialized successfully");
+            Quagga.start();
+            Quagga.onDetected(function(result) {
+              var code = result.codeResult.code;
+              console.log("Detected code: " + code);
+              // Invia il codice della stanza al server
+              fetch('/join_room', {
+                method: 'POST',
+                body: JSON.stringify({ room_code: code }),
+                headers:{
+                  'Content-Type': 'application/json'
+                }
+              }).then(response => {
+                if (response.ok) {
+                  // Redirect l'utente alla stanza
+                  window.location.href = '/room/' + code;
+                } else {
+                  console.error('Errore durante il tentativo di unirsi alla stanza');
+                }
+              });
+            });
+          });
+    </script>
 </body>
 
 </html>

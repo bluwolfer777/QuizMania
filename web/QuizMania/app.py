@@ -1,5 +1,7 @@
+import uuid
+
 import qrcode, socket
-from flask import Flask, render_template_string, request, session, redirect, url_for, render_template
+from flask import Flask, render_template_string, request, session, redirect, url_for, render_template, jsonify
 from flask_session import Session
 import time
 import mysql.connector
@@ -7,6 +9,8 @@ import random
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = '123456789'
+rooms = {}
+
 
 quizManiaDB = mysql.connector.connect(
     host = "192.168.2.2",
@@ -52,18 +56,32 @@ def generateSessionId(email):
     id += email
     return hash(id)
 
-@app.route('/')
+@app.route('/', method="POST")
 def main_page():  # put application's code here
     try:
         if session['id'] == None:
             return redirect('/guestForm', code=302)
     except:
         return redirect('/guestForm', code=302)
+
     room_code = generate_random_code()
     print(room_code)
     generateQR(room_code, "qr")
+    rooms[room_code] = {"gr_code": "gr.png"}
+
+    data = request.json
+    room_code = data['room_code']
+    try:
+        if room_code in rooms:
+            return redirect('/waiting_room' + room_code)
+    except:
+        return jsonify({'error': "Cannot connect to the room"}), 400
 
     return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
+
+#@app.route('/waiting_room/', methods=['POST'])
+#def join_room():
+
 
 @app.route('/play/')
 def play_page():  # put application's code here
