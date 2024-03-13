@@ -82,7 +82,7 @@ def play_page():  # put application's code here
             for x in myresult:
                 name = x
     except:
-        return redirect(getCurrentIP() + '/guestForm/?room=' + str(room), code=302)
+        return redirect('/guestForm/?room=' + str(room), code=302)
     return render_template('waiting_room.html', username=(name))
 
 @app.route('/host/')
@@ -125,7 +125,7 @@ def guestForm():
             newsletter = 0
         session['id'] = generateSessionId(email)
         insert(first_name,last_name,email,newsletter,job,room)
-        return redirect(getCurrentIP() + "/play/?room=" + str(room), code=302)
+        return redirect("/play/?room=" + str(room), code=302)
     return render_template("guestForm.html")
 
 
