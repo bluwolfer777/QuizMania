@@ -126,7 +126,8 @@ def guestForm():
         session['id'] = generateSessionId(email)
         insert(first_name,last_name,email,newsletter,job,room)
         return redirect("/play/?room=" + str(room), code=302)
-    return render_template("guestForm.html")
+    tmp = "/play/?room=" + str(room)
+    return render_template("guestForm.html",tmp=tmp)
 
 
 if __name__ == '__main__':
