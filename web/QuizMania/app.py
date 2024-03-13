@@ -60,7 +60,6 @@ def main_page():  # put application's code here
     except:
         return redirect('/guestForm', code=302)
     room_code = generate_random_code()
-    print(room_code)
     generateQR(room_code, "qr")
 
     return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
