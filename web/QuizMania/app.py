@@ -7,7 +7,7 @@ import random
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = '123456789'
-
+rooms = {}
 
 
 quizManiaDB = mysql.connector.connect(
@@ -72,12 +72,6 @@ def main_page():  # put application's code here
     except:
         return redirect('/guestForm', code=302)
 
-    try:
-        if room_info:
-            return redirect('/waiting_room' + room_code)
-    except:
-        return jsonify({'error': "Cannot connect to the room"}), 400
-
     return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
 
 @app.route('/waiting_room/<room_code>')
@@ -122,12 +116,6 @@ def guestForm():
         session['id'] = generateSessionId(email)
         insert(first_name,last_name,email,newsletter,job)
         return redirect("/", code=302)
-
-        cursor = quizManiaDB.cursor()
-        sql_insert_query = "INSERT INTO romm (id) VALUES (%s)"
-        cursor.execute(sql_insert_query, (room_code))
-        quizManiaDB.commit()
-        cursor.close()
 
     return render_template("guestForm.html")
 
