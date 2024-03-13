@@ -79,8 +79,16 @@ def main_page():  # put application's code here
 
     return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
 
-#@app.route('/waiting_room/', methods=['POST'])
-#def join_room():
+@app.route('/waiting_room/<room_code>')
+def room(room_code):
+    # Recupera le informazioni della stanza dal dizionario delle stanze
+    room_info = rooms.get(room_code)
+    if room_info:
+        qr_code = room_info['qr_code']
+        return render_template('waiting_room.html', room_code=room_code, qr_code=qr_code)
+    else:
+        # Restituisci un errore se il codice della stanza non è valido
+        return 'Codice della stanza non valido', 404
 
 
 @app.route('/play/')
