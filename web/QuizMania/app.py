@@ -65,8 +65,30 @@ def generateSessionId(email):
 
 @app.route('/')
 def main_page():  # put application's code here
+    return "temporary"
+
+@app.route('/play/')
+def play_page():  # put application's code here
+    room = request.args.get('room', '0000')
+    name = ""
+    surname = ""
+    try:
+        if session['id'] == None:
+            return redirect('/guestForm', code=302)
+        else:
+            mycursor = quizManiaDB.cursor()
+            mycursor.execute("SELECT name,surname FROM user WHERE player_session_id = %s", (session['id'],))
+            myresult = mycursor.fetchall()
+            for x in myresult:
+                name = x
+    except:
+        return redirect('/guestForm/?room=' + str(room), code=302)
+    return render_template('waiting_room.html', username=(name))
+
+@app.route('/host/')
+def host_page():  # put application's code here
     room_code = generate_random_code()
-    generateQR(room_code, "qr")
+    generateQR('http://'+getCurrentIP()+'/play/?room=' + room_code, "qr")
     session['id'] = generateSessionId("0")
     try:
         if request.method == 'POST':
@@ -88,28 +110,6 @@ def main_page():  # put application's code here
         print("Errore di inserimento nel db: ")
     return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
 
-@app.route('/play/')
-def play_page():  # put application's code here
-    name = ""
-    surname = ""
-    try:
-        if session['id'] == None:
-            return redirect('/guestForm', code=302)
-        else:
-            mycursor = quizManiaDB.cursor()
-            mycursor.execute("SELECT name,surname FROM user WHERE player_session_id = %s", (session['id'],))
-            myresult = mycursor.fetchall()
-            for x in myresult:
-                name = x
-    except:
-        return redirect('/guestForm', code=302)
-    return render_template('waiting_room.html', username=(name))
-
-@app.route('/host/')
-def host_page():  # put application's code here
-    print("Hello World!")
-    return "host page"
-
 @app.route('/guestForm/', methods=["POST", "GET"])
 def guestForm():
     room = request.args.get('room', '0000')
@@ -123,10 +123,9 @@ def guestForm():
             newsletter = 1
         else:
             newsletter = 0
-
         session['id'] = generateSessionId(email)
         insert(first_name,last_name,email,newsletter,job,room)
-        return redirect("/play", code=302)
+        return redirect("/play/?room=" + str(room), code=302)
     return render_template("guestForm.html")
 
 
