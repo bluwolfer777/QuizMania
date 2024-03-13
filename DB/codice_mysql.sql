@@ -48,6 +48,8 @@ CREATE TABLE user (
     email VARCHAR(45) UNIQUE,
     newsletter TINYINT(1),
     type_text VARCHAR(45),
+    player_session_id INT,
+    FOREIGN KEY (player_session_id) REFERENCES player(session_id),
     FOREIGN KEY (type_text) REFERENCES type(text)
 );
 

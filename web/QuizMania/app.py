@@ -22,12 +22,21 @@ def insertUserData(): #deprecated
     mycursor.execute(sql, val)
     quizManiaDB.commit()
 
-def insert(name,surname,email,newsletter,job):
+def insert(name,surname,email,newsletter,job,room):
     try:
         if request.method == 'POST':
             mycursor = quizManiaDB.cursor()
-            sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
-            val = (name, surname, email, newsletter, job)
+            sql = "INSERT INTO player (session_id,timestamp,room) VALUES (%s, %s, %s)"
+            val = (session['id'], time.time(), int(room))
+            mycursor.execute(sql, val)
+            quizManiaDB.commit()
+    except:
+        print("Errore di inserimento nel db: " + str(session['id']) + " " + str(time.time()) + " " + room)
+    try:
+        if request.method == 'POST':
+            mycursor = quizManiaDB.cursor()
+            sql = "INSERT INTO user (name,surname,email,newsletter,type_text,user_session_id) VALUES (%s, %s,%s,%s,%s,%s)"
+            val = (name, surname, email, newsletter, job, session['id'])
             mycursor.execute(sql, val)
             quizManiaDB.commit()
     except:
@@ -56,27 +65,54 @@ def generateSessionId(email):
 
 @app.route('/')
 def main_page():  # put application's code here
-    try:
-        if session['id'] == None:
-            return redirect('/guestForm', code=302)
-    except:
-        return redirect('/guestForm', code=302)
-    room_code = generate_random_code()
-    generateQR(room_code, "qr")
-
-    return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
+    return "temporary"
 
 @app.route('/play/')
 def play_page():  # put application's code here
-    return "play page"
+    room = request.args.get('room', '0000')
+    name = ""
+    surname = ""
+    try:
+        if session['id'] == None:
+            return redirect('/guestForm', code=302)
+        else:
+            mycursor = quizManiaDB.cursor()
+            mycursor.execute("SELECT name,surname FROM user WHERE player_session_id = %s", (session['id'],))
+            myresult = mycursor.fetchall()
+            for x in myresult:
+                name = x
+    except:
+        return redirect('/guestForm/?room=' + str(room), code=302)
+    return render_template('waiting_room.html', username=(name))
 
 @app.route('/host/')
 def host_page():  # put application's code here
-    print("Hello World!")
-    return "host page"
+    room_code = generate_random_code()
+    generateQR('http://'+getCurrentIP()+'/play/?room=' + room_code, "qr")
+    session['id'] = generateSessionId("0")
+    try:
+        if request.method == 'POST':
+            mycursor = quizManiaDB.cursor()
+            sql = "INSERT INTO host (session_id) VALUES (%s)"
+            val = (session['id'])
+            mycursor.execute(sql, val)
+            quizManiaDB.commit()
+    except:
+        print("Errore di inserimento nel db: ")
+    try:
+        if request.method == 'POST':
+            mycursor = quizManiaDB.cursor()
+            sql = "INSERT INTO room (id,host_session_id) VALUES (%s, %s)"
+            val = (id, session['id'])
+            mycursor.execute(sql, val)
+            quizManiaDB.commit()
+    except:
+        print("Errore di inserimento nel db: ")
+    return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
 
 @app.route('/guestForm/', methods=["POST", "GET"])
 def guestForm():
+    room = request.args.get('room', '0000')
     if request.method == "POST":
         first_name = request.form.get("name")
         last_name = request.form.get("surname")
@@ -87,11 +123,15 @@ def guestForm():
             newsletter = 1
         else:
             newsletter = 0
-
         session['id'] = generateSessionId(email)
-        insert(first_name,last_name,email,newsletter,job)
-        return redirect("/", code=302)
-    return render_template("guestForm.html")
+        insert(first_name,last_name,email,newsletter,job,room)
+        return redirect("/play/?room=" + str(room), code=302)
+    tmp = "/play/?room=" + str(room)
+    return render_template("guestForm.html",tmp=tmp)
+
+@app.route('/host/ingame/', methods=["POST", "GET"])
+def inGame():
+    return "no"
 
 
 if __name__ == '__main__':
