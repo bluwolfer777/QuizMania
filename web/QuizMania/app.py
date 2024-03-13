@@ -23,12 +23,15 @@ def insertUserData(): #deprecated
     quizManiaDB.commit()
 
 def insert(name,surname,email,newsletter,job):
-    if request.method == 'POST':
-        mycursor = quizManiaDB.cursor()
-        sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
-        val = (name, surname, email, newsletter, job)
-        mycursor.execute(sql, val)
-        quizManiaDB.commit()
+    try:
+        if request.method == 'POST':
+            mycursor = quizManiaDB.cursor()
+            sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
+            val = (name, surname, email, newsletter, job)
+            mycursor.execute(sql, val)
+            quizManiaDB.commit()
+    except:
+        print("Errore di inserimento nel db: " + name + " " + surname + " " + email + " " + newsletter + " " + job)
 
 def generate_random_code():
     return "{:04d}".format(random.randint(0, 9999))
