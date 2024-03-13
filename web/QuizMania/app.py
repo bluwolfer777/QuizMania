@@ -39,7 +39,6 @@ def generateQR(link,filename):
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
     img.save('static/' + filename + '.png')
-
 def getCurrentIP():
     local_hostname = socket.gethostname()
     ip_addresses = socket.gethostbyname_ex(local_hostname)[2]
