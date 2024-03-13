@@ -129,6 +129,10 @@ def guestForm():
     tmp = "/play/?room=" + str(room)
     return render_template("guestForm.html",tmp=tmp)
 
+@app.route('/host/ingame/', methods=["POST", "GET"])
+def inGame():
+    return "no"
+
 
 if __name__ == '__main__':
     tmp = getCurrentIP()
