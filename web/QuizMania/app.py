@@ -31,7 +31,7 @@ def insert(name,surname,email,newsletter,job):
             mycursor.execute(sql, val)
             quizManiaDB.commit()
     except:
-        print("Errore di inserimento nel db: " + name + " " + surname + " " + email + " " + newsletter + " " + job)
+        print("Errore di inserimento nel db: " + name + " " + surname + " " + email + " " + str(newsletter) + " " + job)
 
 def generate_random_code():
     return "{:04d}".format(random.randint(0, 9999))
