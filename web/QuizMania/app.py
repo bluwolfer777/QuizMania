@@ -15,7 +15,7 @@ quizManiaDB = mysql.connector.connect(
     database = "quizmania"
 )
 
-def insertUserData():
+def insertUserData(): #deprecated
     mycursor = quizManiaDB.cursor()
     sql = "INSERT INTO user (name,surname,email,newsletter,type_text) VALUES (%s, %s,%s,%s,%s)"
     val = ("Leon","Rosamilia","leon.rosamili@gmail.com",1,"altro")
