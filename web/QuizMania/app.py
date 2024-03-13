@@ -1,5 +1,3 @@
-import uuid
-
 import qrcode, socket
 from flask import Flask, render_template_string, request, session, redirect, url_for, render_template, jsonify
 from flask_session import Session
@@ -9,7 +7,7 @@ import random
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = '123456789'
-rooms = {}
+
 
 
 quizManiaDB = mysql.connector.connect(
@@ -44,6 +42,16 @@ def generateQR(link,filename):
     img = qr.make_image(fill_color="black", back_color="white")
     img.save('static/' + filename + '.png')
 
+    room_code = generate_random_code()
+    generateQR(room_code, "qr")
+    rooms[room_code] = {"gr_code": "gr.png"}
+
+    cursor = quizManiaDB.cursor()
+    sql_select_query = "SELECT * FROM room WHERE id = %s"
+    cursor.execute(sql_select_query, (room_code,))
+    room_info = cursor.fetchone()
+    cursor.close()
+
 def getCurrentIP():
     local_hostname = socket.gethostname()
     ip_addresses = socket.gethostbyname_ex(local_hostname)[2]
@@ -56,7 +64,7 @@ def generateSessionId(email):
     id += email
     return hash(id)
 
-@app.route('/', method="POST")
+@app.route('/')
 def main_page():  # put application's code here
     try:
         if session['id'] == None:
@@ -64,15 +72,8 @@ def main_page():  # put application's code here
     except:
         return redirect('/guestForm', code=302)
 
-    room_code = generate_random_code()
-    print(room_code)
-    generateQR(room_code, "qr")
-    rooms[room_code] = {"gr_code": "gr.png"}
-
-    data = request.json
-    room_code = data['room_code']
     try:
-        if room_code in rooms:
+        if room_info:
             return redirect('/waiting_room' + room_code)
     except:
         return jsonify({'error': "Cannot connect to the room"}), 400
@@ -81,8 +82,13 @@ def main_page():  # put application's code here
 
 @app.route('/waiting_room/<room_code>')
 def room(room_code):
-    # Recupera le informazioni della stanza dal dizionario delle stanze
-    room_info = rooms.get(room_code)
+    # Recupera le informazioni della stanza dal database
+    cursor = quizManiaDB.cursor()
+    sql_select_query = "SELECT * FROM room WHERE id = %s"
+    cursor.execute(sql_select_query, (room_code,))
+    room_info = cursor.fetchone()
+    cursor.close()
+
     if room_info:
         qr_code = room_info['qr_code']
         return render_template('waiting_room.html', room_code=room_code, qr_code=qr_code)
@@ -116,6 +122,13 @@ def guestForm():
         session['id'] = generateSessionId(email)
         insert(first_name,last_name,email,newsletter,job)
         return redirect("/", code=302)
+
+        cursor = quizManiaDB.cursor()
+        sql_insert_query = "INSERT INTO romm (id) VALUES (%s)"
+        cursor.execute(sql_insert_query, (room_code))
+        quizManiaDB.commit()
+        cursor.close()
+
     return render_template("guestForm.html")
 
 
