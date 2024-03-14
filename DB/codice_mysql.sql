@@ -41,6 +41,25 @@ CREATE TABLE type (
     text VARCHAR(45) PRIMARY KEY
 );
 
+CREATE TABLE host (
+    session_id VARCHAR(30) PRIMARY KEY
+);
+
+CREATE TABLE room (
+    id INT PRIMARY KEY,
+    host_session_id VARCHAR(30),
+    topic_id INT,
+    FOREIGN KEY (host_session_id) REFERENCES host(session_id),
+    FOREIGN KEY (topic_id) REFERENCES topic(id)
+);
+
+CREATE TABLE player (
+    session_id VARCHAR(30) PRIMARY KEY,
+    timestamp VARCHAR(100),
+    room_id INT,
+    FOREIGN KEY (room_id) REFERENCES room(id)
+);
+
 CREATE TABLE user (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(45),
@@ -48,40 +67,21 @@ CREATE TABLE user (
     email VARCHAR(45) UNIQUE,
     newsletter TINYINT(1),
     type_text VARCHAR(45),
-    player_session_id INT,
+    player_session_id VARCHAR(30),
     FOREIGN KEY (player_session_id) REFERENCES player(session_id),
     FOREIGN KEY (type_text) REFERENCES type(text)
-);
-
-CREATE TABLE host (
-    session_id INT PRIMARY KEY
-);
-
-CREATE TABLE room (
-    id INT PRIMARY KEY,
-    host_session_id INT,
-    topic_id INT,
-    FOREIGN KEY (host_session_id) REFERENCES host(session_id),
-    FOREIGN KEY (topic_id) REFERENCES topic(id)
-);
-
-CREATE TABLE player (
-    session_id INT PRIMARY KEY,
-    timestamp TIMESTAMP,
-    room_id INT,
-    FOREIGN KEY (room_id) REFERENCES room(id)
 );
 
 CREATE TABLE answers (
     answer_number INT,
     answer_question_id INT,
-    game_session_id INT,
-    timestamp TIMESTAMP,
+    player_session_id VARCHAR(30),
+    timestamp VARCHAR(100),
     points INT,
-    PRIMARY KEY (answer_number, answer_question_id, game_session_id),
+    PRIMARY KEY (answer_number, answer_question_id, player_session_id),
     FOREIGN KEY (answer_number) REFERENCES answer(number),
     FOREIGN KEY (answer_question_id) REFERENCES answer(question_id),
-    FOREIGN KEY (game_session_id) REFERENCES player(session_id)
+    FOREIGN KEY (player_session_id) REFERENCES player(session_id)
 );
 
 INSERT INTO type VALUE ('studente medie');
