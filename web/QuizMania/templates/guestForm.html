@@ -51,7 +51,7 @@
 
         <br>
 
-        <form method="post" action="{{ tmp }}" id="former">
+        <form method="post" action="/guestForm/" id="former">
             <label for="name">Nome&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
             <input id="name" type="text" name="name"><br><br>
             <label for="surname">Cognome&nbsp;</label>
@@ -71,6 +71,7 @@
             <label for="cookies">Accetto l' informativa sulla privacy e sui cookies</label>
             <input id="cookies" type="checkbox" name="cookies"><br><br>
             <input type="submit" id="submit">
+            <input type="number" value="{{ tmp }}" id="room" style="display: none;" name="room">
             <p id="allert"></p>
         </form>
 

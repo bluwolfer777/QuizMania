@@ -119,6 +119,7 @@ def guestForm():
         email = request.form.get("email")
         newsletter = request.form.get("newsletter")
         job = request.form.get("type")
+        room = request.form.get("room")
         if newsletter == "True":
             newsletter = 1
         else:
@@ -126,7 +127,7 @@ def guestForm():
         session['id'] = generateSessionId(email)
         insert(first_name,last_name,email,newsletter,job,room)
         return redirect("/play/?room=" + str(room), code=302)
-    tmp = "/play/?room=" + str(room)
+    tmp = str(room)
     return render_template("guestForm.html",tmp=tmp)
 
 @app.route('/host/ingame/', methods=["POST", "GET"])
