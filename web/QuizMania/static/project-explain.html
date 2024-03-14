@@ -14,10 +14,11 @@
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-size: cover;
+            font-family:"Calibri", sans-serif;
         }
 
         .explain {
-            background-color:rgba(24, 24, 24, 0.616);
+            background-color: rgba(24, 24, 24, 0.616);
         }
 
         ul.horizontal-list {
@@ -29,13 +30,27 @@
             display: inline;
             margin-right: 10px;
         }
+
+        .fot {
+            background-color: #232429;
+            padding: 10px;
+        }
+
+        .attack {
+            margin-bottom: 0;
+        }
+
+        .container2 {
+            --bs-gutter-x: 0;
+        }
     </style>
 </head>
-<body class="container text-center" data-bs-theme="dark">
+
+<body class="container2 container text-center" data-bs-theme="dark">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="" width="30" height="24" class="d-inline-block align-text-top" alt="">
+                <img src="Img/Logo_Quizmania.jpeg" width="30" height="auto" class="d-inline-block align-text-top" alt="">
                 QuizMania
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -48,19 +63,16 @@
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
+                        <a class="nav-link" href="#">Info</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container mt-2 explain"><b>
+    <div class="container explain"><b>
         <h1 class="display-4">Cosa è QuizMania?</h1>
         <br>
-        <p>
+        <p class="attack">
             QuizMania è un progetto ispirato alla famosa piattaforma di apprendimento basata<br>
             sui quiz Kahoot, ideata da cinque studenti della CPT di Trevano perché impossibilitati<br>
             ad andare in settimana bianca.<br>
@@ -81,9 +93,6 @@
             Lorenzo Berther - I2AA<br>
             Aiuto Backend & Database
             <br><br>
-            Robin Sartore - I2AA<br>
-            Aiuto morale
-            <br><br>
             Sebastiano De Bertoldi - I2AC<br>
             Database & UI
             <br><br>
@@ -92,8 +101,19 @@
             <br><br>
             Esteban Storelli - I2BD<br>
             Database
+            <br>
+            &nbsp;
         </p></b>
     </div>
+    <div class="card-footer text-body-secondary fot">
+        <h1>Fine</h1>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous">
+    </script>
 
 </body>
+
 </html>
