@@ -86,8 +86,6 @@ INSERT INTO belongs VALUE (4,34);
 INSERT INTO belongs VALUE (4,35);
 INSERT INTO belongs VALUE (4,36);
 
-USE quizmania;
-
 INSERT INTO answer VALUE (1,1,'Organizzare la tua collezione di meme online',0);
 INSERT INTO answer VALUE (2,1,'Fare da interfaccia tra l''utente, i software applicativi e l''hardware di una macchina',1);
 INSERT INTO answer VALUE (3,1,'Gestire il traffico internet di una macchina',0);
