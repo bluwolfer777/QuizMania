@@ -63,6 +63,13 @@ def generateSessionId(email):
     id += email
     return hash(id)
 
+def getUsersInRoom():
+    cursor = quizManiaDB.cursor()
+    sql = "SELECT user.name,user.surname FROM user,player,room,host WHERE room.host_session_id ='"+ str(session['id']) +"' AND room.id = player.room_id AND user.id = user.player_session_id ORDER BY player.timestamp"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    return rows
+
 @app.route('/')
 def main_page():  # put application's code here
     return "temporary"
@@ -90,25 +97,32 @@ def host_page():  # put application's code here
     room_code = generate_random_code()
     generateQR('http://'+getCurrentIP()+'/play/?room=' + room_code, "qr")
     session['id'] = generateSessionId("0")
+#    try:
+    mycursor = quizManiaDB.cursor()
+    sql = "INSERT INTO host (session_id) VALUES (%s);"
+    tmp = [str(session['id'])]
+    print("HOST SESSION  ID _____> "+str(session['id']))
+    val = (tmp)
+    mycursor.execute(sql, val)
+    quizManiaDB.commit()
+#    except:
+#        print("Errore di inserimento nel db: ")
     try:
-        if request.method == 'POST':
-            mycursor = quizManiaDB.cursor()
-            sql = "INSERT INTO host (session_id) VALUES (%s)"
-            val = (session['id'])
-            mycursor.execute(sql, val)
-            quizManiaDB.commit()
+        mycursor = quizManiaDB.cursor()
+        sql = "INSERT INTO room (id,host_session_id) VALUES (%s, %s);"
+        val = (room_code, str(session['id']))
+        mycursor.execute(sql, val)
+        quizManiaDB.commit()
     except:
         print("Errore di inserimento nel db: ")
-    try:
-        if request.method == 'POST':
-            mycursor = quizManiaDB.cursor()
-            sql = "INSERT INTO room (id,host_session_id) VALUES (%s, %s)"
-            val = (id, session['id'])
-            mycursor.execute(sql, val)
-            quizManiaDB.commit()
-    except:
-        print("Errore di inserimento nel db: ")
-    return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
+    users = getUsersInRoom()
+    renderedUserIcons = []
+    for user in users:
+        renderedUserIcons.append("<div class='col'><img src='static/user.png'><br>" + user[0] + " " + user[1] + "</div>")
+    out = ""
+    for user in renderedUserIcons:
+        out += user
+    return render_template('index.html', qrcode="../static/qr.png", room_code=room_code , user=out)
 
 @app.route('/guestForm/', methods=["POST", "GET"])
 def guestForm():
