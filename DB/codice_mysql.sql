@@ -67,7 +67,7 @@ CREATE TABLE room (
 
 CREATE TABLE player (
     session_id INT PRIMARY KEY,
-    timestamp TIMESTAMP,
+    timestamp VARCHAR(100),
     room_id INT,
     FOREIGN KEY (room_id) REFERENCES room(id)
 );
@@ -76,7 +76,7 @@ CREATE TABLE answers (
     answer_number INT,
     answer_question_id INT,
     game_session_id INT,
-    timestamp TIMESTAMP,
+    timestamp VARCHAR(100),
     points INT,
     PRIMARY KEY (answer_number, answer_question_id, game_session_id),
     FOREIGN KEY (answer_number) REFERENCES answer(number),

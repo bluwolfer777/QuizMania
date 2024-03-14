@@ -1,5 +1,5 @@
 import qrcode, socket
-from flask import Flask, render_template_string, request, session, redirect, url_for, render_template
+from flask import Flask, render_template_string, request, session, redirect, url_for, render_template, jsonify
 from flask_session import Session
 import time
 import mysql.connector
@@ -52,11 +52,12 @@ def generateQR(link,filename):
     img = qr.make_image(fill_color="black", back_color="white")
     img.save('static/' + filename + '.png')
 def getCurrentIP():
-    local_hostname = socket.gethostname()
-    ip_addresses = socket.gethostbyname_ex(local_hostname)[2]
-    filtered_ips = [ip for ip in ip_addresses if not ip.startswith("127.")]
-    first_ip = filtered_ips[:1]
-    return first_ip[0]
+    #local_hostname = socket.gethostname()
+    #ip_addresses = socket.gethostbyname_ex(local_hostname)[2]
+    #filtered_ips = [ip for ip in ip_addresses if not ip.startswith("127.")]
+    #first_ip = filtered_ips[:1]
+    #return first_ip[0]
+    return "192.168.2.11"
 
 def generateSessionId(email):
     id = str(time.time())
@@ -109,6 +110,18 @@ def host_page():  # put application's code here
     except:
         print("Errore di inserimento nel db: ")
     return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
+
+# Endpoint API per ottenere una domanda casuale dal database
+@app.route('/mobile-answer')
+def get_question():
+    try:
+        # Esegui una query per ottenere una domanda casuale
+        mycursor = quizManiaDB.cursor()
+        mycursor.execute("SELECT question.text FROM questions WHERE id = 1")
+        question = mycursor.fetchone()[0]
+        return jsonify({'question': question})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/guestForm/', methods=["POST", "GET"])
 def guestForm():
