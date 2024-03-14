@@ -26,21 +26,23 @@ def insert(name,surname,email,newsletter,job,room):
     try:
         if request.method == 'POST':
             mycursor = quizManiaDB.cursor()
-            sql = "INSERT INTO player (session_id,timestamp,room) VALUES (%s, %s, %s)"
-            val = (session['id'], time.time(), int(room))
+            sql = "INSERT INTO player (session_id,timestamp,room_id) VALUES (%s, %s, %s)"
+            val = (str(session['id']), str(time.time()), int(room))
             mycursor.execute(sql, val)
             quizManiaDB.commit()
-    except:
+    except Exception as e:
         print("Errore di inserimento nel db: " + str(session['id']) + " " + str(time.time()) + " " + room)
+        print(e)
     try:
         if request.method == 'POST':
             mycursor = quizManiaDB.cursor()
-            sql = "INSERT INTO user (name,surname,email,newsletter,type_text,user_session_id) VALUES (%s, %s,%s,%s,%s,%s)"
-            val = (name, surname, email, newsletter, job, session['id'])
+            sql = "INSERT INTO user (name,surname,email,newsletter,type_text,player_session_id) VALUES (%s, %s,%s,%s,%s,%s)"
+            val = (name, surname, email, newsletter, job, str(session['id']))
             mycursor.execute(sql, val)
             quizManiaDB.commit()
     except:
         print("Errore di inserimento nel db: " + name + " " + surname + " " + email + " " + str(newsletter) + " " + job)
+        print(e)
 
 def generate_random_code():
     return "{:04d}".format(random.randint(0, 9999))
