@@ -111,16 +111,42 @@ def host_page():  # put application's code here
         print("Errore di inserimento nel db: ")
     return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
 
-@app.route('/mobile-answer')
+@app.route('/mobile-answer', methods=['POST', 'GET'])
 def get_question():
     try:
-        # Esegui una query per ottenere una domanda casuale
-        mycursor = quizManiaDB.cursor()
-        mycursor.execute("SELECT question.text,answer.text FROM belongs JOIN question ON question.id = belongs.question_id RIGHT JOIN answer ON answer.question_id = question.id WHERE belongs.topic_id = 1 AND question.id = 1")
-        question = mycursor.fetchall()
-        return render_template('mobile-answer.html', question=question)
+        if request.method == 'GET':
+
+            # Esegui una query per ottenere una domanda casuale
+            mycursor = quizManiaDB.cursor()
+            mycursor.execute("SELECT question.text,answer.text FROM belongs JOIN question ON question.id = belongs.question_id RIGHT JOIN answer ON answer.question_id = question.id WHERE belongs.topic_id = 1 AND question.id = 1")
+            question = mycursor.fetchall()
+            return render_template('mobile-answer.html', question=question)
+        #elif request.method == "POST":
+        #    answer = request.form.get('answer')  # Ottieni la risposta inviata dall'utente
+        #    mycursor = quizManiaDB.cursor()
+        #    sql = "INSERT INTO answers(answer_question_id,timestamp) VALUES (%s, %s)"
+        #    val = (answer, str(time.time()))
+        #    mycursor.execute(sql, val)
+        #    quizManiaDB.commit()
+        #    print(val)
+        #    return 'ok'
+
     except Exception as e:
         return str(e), 500
+# Endpoint API per inviare la risposta dell'utente al server
+#@app.route('/mobile-answer', methods=['POST'])
+#def submit_answer():
+#    try:
+#        answer = request.form.get('answer')  # Ottieni la risposta inviata dall'utente
+#        mycursor = quizManiaDB.cursor()
+#        sql = "INSERT INTO answers(answer_question_id,timestamp) VALUES (%s, %s)"
+#        val = (answer, time.time())
+#        mycursor.execute(sql, val)
+#        quizManiaDB.commit()
+#        print(val)
+#        return render_template('/', answer=answer)
+#    except Exception as e:
+#        return str(e), 500
 
 @app.route('/guestForm/', methods=["POST", "GET"])
 def guestForm():
