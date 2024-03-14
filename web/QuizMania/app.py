@@ -116,8 +116,8 @@ def get_question():
     try:
         # Esegui una query per ottenere una domanda casuale
         mycursor = quizManiaDB.cursor()
-        mycursor.execute("SELECT question.text FROM question JOIN belongs ON question_id WHERE question.id = belongs.question_id AND belongs.topic_id = 1 LIMIT 1")
-        question = mycursor.fetchone()[0]
+        mycursor.execute("SELECT question.text,answer.text FROM belongs JOIN question ON question.id = belongs.question_id RIGHT JOIN answer ON answer.question_id = question.id WHERE belongs.topic_id = 1 AND question.id = 1")
+        question = mycursor.fetchall()
         return render_template('mobile-answer.html', question=question)
     except Exception as e:
         return str(e), 500
