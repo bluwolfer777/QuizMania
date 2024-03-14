@@ -111,17 +111,16 @@ def host_page():  # put application's code here
         print("Errore di inserimento nel db: ")
     return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
 
-# Endpoint API per ottenere una domanda casuale dal database
 @app.route('/mobile-answer')
 def get_question():
     try:
         # Esegui una query per ottenere una domanda casuale
         mycursor = quizManiaDB.cursor()
-        mycursor.execute("SELECT question.text FROM questions WHERE id = 1")
+        mycursor.execute("SELECT question.text FROM question JOIN belongs ON question_id WHERE question.id = belongs.question_id AND belongs.topic_id = 1 LIMIT 1")
         question = mycursor.fetchone()[0]
-        return jsonify({'question': question})
+        return render_template('mobile-answer.html', question=question)
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return str(e), 500
 
 @app.route('/guestForm/', methods=["POST", "GET"])
 def guestForm():
