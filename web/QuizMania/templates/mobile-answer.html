@@ -30,14 +30,36 @@
 
 <div class="d-grid gap-2">
     <form action="/mobile-answer" method="post">
-        <button class="col-12 rounded p-3 my-1 border border-light-subtle btn-answer" data-answer="1" type="button">{{ question[0][1] }}</button>
-        <button class="col-12 rounded p-3 my-1 border border-light-subtle btn-answer" data-answer="2" type="button">{{ question[1][1] }}</button>
-        <button class="col-12 rounded p-3 my-1 border border-light-subtle btn-answer" data-answer="3" type="button">{{ question[2][1] }}</button>
-        <button class="col-12 rounded p-3 my-1 border border-light-subtle btn-answer" data-answer="4" type="button">{{ question[3][1] }}</button>
+
+        <input type="text" name="answer" style="display: none">
+        <div style="display:none" id="answer_ids">{{ question[0][2] + "," + question[1][2] + "," + question[2][2] +  "," + question[3][2] +}}</div>
+        <button onclick="setAnswer(0)" class="col-12 rounded p-3 my-1 border border-light-subtle btn-answer" data-answer="1" type="button">{{ question[0][1] }}</button>
+        <button onclick="setAnswer(1)" class="col-12 rounded p-3 my-1 border border-light-subtle btn-answer" data-answer="2" type="button">{{ question[1][1] }}</button>
+        <button onclick="setAnswer(2)" class="col-12 rounded p-3 my-1 border border-light-subtle btn-answer" data-answer="3" type="button">{{ question[2][1] }}</button>
+        <button onclick="setAnswer(3)" class="col-12 rounded p-3 my-1 border border-light-subtle btn-answer" data-answer="4" type="button">{{ question[3][1] }}</button>
     </form>
 </div>
 
 <script>
+
+    function setAnswer(let button){
+        let tmp = "";
+        let id;
+        ids = document.getElementById('answer_ids').innerHtml;
+        count = 0;
+        for (let i = 0; i < ids; i++) {
+            if (ids.charAt(i) == ",") {
+                id[count] = tmp;
+                count++;
+                tmp = "";
+            }
+            else {
+            tmp += ids.charAt(i);
+            }
+        }
+        document.getElementById('answer').value = id[button]
+    }
+
 $(document).ready(function() {
     // Funzione per ottenere la domanda dal server e aggiornare il contenuto della pagina
     function getQuestion() {

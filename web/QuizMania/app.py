@@ -62,7 +62,10 @@ def getCurrentIP():
 def generateSessionId(email):
     id = str(time.time())
     id += email
-    return hash(id)
+    id = hash(id)
+    if id > 0:
+        id *= -1
+    return id
 
 @app.route('/')
 def main_page():  # put application's code here
@@ -118,36 +121,25 @@ def get_question():
 
             # Esegui una query per ottenere una domanda casuale
             mycursor = quizManiaDB.cursor()
-            mycursor.execute("SELECT question.text,answer.text FROM belongs JOIN question ON question.id = belongs.question_id RIGHT JOIN answer ON answer.question_id = question.id WHERE belongs.topic_id = 1 AND question.id = 1")
+            mycursor.execute("SELECT question.text,answer.text,answer.question_id FROM belongs JOIN question ON question.id = belongs.question_id RIGHT JOIN answer ON answer.question_id = question.id WHERE belongs.topic_id = 1 AND question.id = 1")
             question = mycursor.fetchall()
             return render_template('mobile-answer.html', question=question)
         elif request.method == "POST":
-            answer = request.form.get('answer')  # Ottieni la risposta inviata dall'utente
+            answer_question_id = request.form.get('answer_ids')  # Ottieni la risposta inviata dall'utente
+            answer_number = request.form.get('answer')
+            player_session_id = session['id']
+            timestamp = str(time.time())
+            points = 5
             mycursor = quizManiaDB.cursor()
-            sql = "INSERT INTO answers(answer_number,answer_question_id,player_session_id,timestamp) VALUES (%s,%s,%s, %s)"
-            val = (1,answer, session['id'], str(time.time()))
-            print()
+            sql = "INSERT INTO answers(answer_number,answer_question_id,player_session_id,timestamp,points) VALUES (%s,%s,%s,%s,%s)"
+            val = (answer_number,answer_question_id, player_session_id,timestamp,points)
             mycursor.execute(sql, val)
             quizManiaDB.commit()
-            print(val)
+            #print(val)
             return 'ok'
 
     except Exception as e:
         return str(e), 500
-# Endpoint API per inviare la risposta dell'utente al server
-#@app.route('/mobile-answer', methods=['POST'])
-#def submit_answer():
-#    try:
-#        answer = request.form.get('answer')  # Ottieni la risposta inviata dall'utente
-#        mycursor = quizManiaDB.cursor()
-#        sql = "INSERT INTO answers(answer_question_id,timestamp) VALUES (%s, %s)"
-#        val = (answer, time.time())
-#        mycursor.execute(sql, val)
-#        quizManiaDB.commit()
-#        print(val)
-#        return render_template('/', answer=answer)
-#    except Exception as e:
-#        return str(e), 500
 
 @app.route('/guestForm/', methods=["POST", "GET"])
 def guestForm():
