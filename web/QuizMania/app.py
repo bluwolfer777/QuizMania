@@ -121,15 +121,16 @@ def get_question():
             mycursor.execute("SELECT question.text,answer.text FROM belongs JOIN question ON question.id = belongs.question_id RIGHT JOIN answer ON answer.question_id = question.id WHERE belongs.topic_id = 1 AND question.id = 1")
             question = mycursor.fetchall()
             return render_template('mobile-answer.html', question=question)
-        #elif request.method == "POST":
-        #    answer = request.form.get('answer')  # Ottieni la risposta inviata dall'utente
-        #    mycursor = quizManiaDB.cursor()
-        #    sql = "INSERT INTO answers(answer_question_id,timestamp) VALUES (%s, %s)"
-        #    val = (answer, str(time.time()))
-        #    mycursor.execute(sql, val)
-        #    quizManiaDB.commit()
-        #    print(val)
-        #    return 'ok'
+        elif request.method == "POST":
+            answer = request.form.get('answer')  # Ottieni la risposta inviata dall'utente
+            mycursor = quizManiaDB.cursor()
+            sql = "INSERT INTO answers(answer_number,answer_question_id,player_session_id,timestamp) VALUES (%s,%s,%s, %s)"
+            val = (1,answer, session['id'], str(time.time()))
+            print()
+            mycursor.execute(sql, val)
+            quizManiaDB.commit()
+            print(val)
+            return 'ok'
 
     except Exception as e:
         return str(e), 500
