@@ -97,22 +97,22 @@ def host_page():  # put application's code here
     room_code = generate_random_code()
     generateQR('http://'+getCurrentIP()+'/play/?room=' + room_code, "qr")
     session['id'] = generateSessionId("0")
+#    try:
+    mycursor = quizManiaDB.cursor()
+    sql = "INSERT INTO host (session_id) VALUES (%s);"
+    tmp = [str(session['id'])]
+    print("HOST SESSION  ID _____> "+str(session['id']))
+    val = (tmp)
+    mycursor.execute(sql, val)
+    quizManiaDB.commit()
+#    except:
+#        print("Errore di inserimento nel db: ")
     try:
-        if request.method == 'POST':
-            mycursor = quizManiaDB.cursor()
-            sql = "INSERT INTO host (session_id) VALUES (%s)"
-            val = (session['id'])
-            mycursor.execute(sql, val)
-            quizManiaDB.commit()
-    except:
-        print("Errore di inserimento nel db: ")
-    try:
-        if request.method == 'POST':
-            mycursor = quizManiaDB.cursor()
-            sql = "INSERT INTO room (id,host_session_id) VALUES (%s, %s)"
-            val = (id, session['id'])
-            mycursor.execute(sql, val)
-            quizManiaDB.commit()
+        mycursor = quizManiaDB.cursor()
+        sql = "INSERT INTO room (id,host_session_id) VALUES (%s, %s);"
+        val = (room_code, str(session['id']))
+        mycursor.execute(sql, val)
+        quizManiaDB.commit()
     except:
         print("Errore di inserimento nel db: ")
     users = getUsersInRoom()
