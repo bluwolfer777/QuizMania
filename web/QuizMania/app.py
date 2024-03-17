@@ -88,8 +88,9 @@ def play_page():  # put application's code here
             mycursor = quizManiaDB.cursor()
             mycursor.execute("SELECT name,surname FROM user WHERE player_session_id = %s", (session['id'],))
             myresult = mycursor.fetchall()
-            name = myresult[0][0] + " " + myresult[1][0]
-    except:
+            name = myresult[0][0] + " " + myresult[0][1]
+    except Exception as e:
+        print(e)
         return redirect('/guestForm/?room=' + str(room), code=302)
     return render_template('waiting_room.html', username=(name))
 
@@ -116,14 +117,7 @@ def host_page():  # put application's code here
         quizManiaDB.commit()
     except:
         print("Errore di inserimento nel db: ")
-    users = getUsersInRoom()
-    renderedUserIcons = []
-    for user in users:
-        renderedUserIcons.append("<div class='col'><img src='static/user.png'><br>" + user[0] + " " + user[1] + "</div>")
-    out = ""
-    for user in renderedUserIcons:
-        out += user
-    return render_template('index.html', qrcode="../static/qr.png", room_code=room_code , user=out)
+    return render_template('index.html', qrcode="../static/qr.png", room_code=room_code)
 
 @app.route('/guestForm/', methods=["POST", "GET"])
 def guestForm():
@@ -148,6 +142,18 @@ def guestForm():
 @app.route('/host/ingame/', methods=["POST", "GET"])
 def inGame():
     return "no"
+
+@app.route('/host/showPlayers/', methods=["POST", "GET"])
+def showPlayers():
+    users = getUsersInRoom()
+    renderedUserIcons = []
+    for user in users:
+        renderedUserIcons.append(
+            "<div class='col'><img src='static/user.png'><br>" + user[0] + " " + user[1] + "</div>")
+    out = ""
+    for user in renderedUserIcons:
+        out += user
+    return out
 
 
 if __name__ == '__main__':
