@@ -9,9 +9,9 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = '123456789'
 
 quizManiaDB = mysql.connector.connect(
-    host = "192.168.2.2",
-    user = "esteban",
-    password = "admin",
+    host = "localhost",
+    user = "root",
+    #password = "admin",
     database = "quizmania"
 )
 
@@ -88,8 +88,7 @@ def play_page():  # put application's code here
             mycursor = quizManiaDB.cursor()
             mycursor.execute("SELECT name,surname FROM user WHERE player_session_id = %s", (session['id'],))
             myresult = mycursor.fetchall()
-            for x in myresult:
-                name = x
+            name = myresult[0][0] + " " + myresult[1][0]
     except:
         return redirect('/guestForm/?room=' + str(room), code=302)
     return render_template('waiting_room.html', username=(name))
